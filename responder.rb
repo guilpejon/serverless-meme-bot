@@ -27,8 +27,13 @@ class Responder
 
     interaction = JSON.parse(raw_body)
 
-    if interaction['type'] == 1
+    case interaction['type']
+    when 1
+      # discord ping
       { type: 1 }
+    when 2
+      # command call
+      handle_command(interaction)
     else
       [400,
        {'Content-Type' => "text/plain"},
@@ -38,6 +43,30 @@ class Responder
   end
 
   private
+
+  def handle_command(interaction)
+    type = type_from_interaction(interaction)
+    {
+      type: 4,
+      data: {
+        content: "You tried to get a #{type} meme"
+      }
+    }
+  end
+
+  def type_from_interaction(interaction)
+    command_data = interaction["data"]
+
+    raise "Unexpected command: #{command_data['name']}" unless command_data["name"] == "meme"
+
+    command_data["options"].each do |option|
+      if option["name"] == "type"
+        return option["value"]
+      end
+    end
+
+    raise "No type found"
+  end
 
   # Verify a request by checking the timestamp and signature
   def valid_request?(raw_body, rack_env)

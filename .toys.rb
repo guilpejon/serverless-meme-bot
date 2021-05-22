@@ -11,8 +11,8 @@ tool "create-command" do
       options: [
         {
           type: 3,
-          name: 'reference',
-          description: 'Meme reference (e.g. `IT`)',
+          name: 'type',
+          description: 'Meme type (e.g. `IT`)',
           required: true
         }
       ]

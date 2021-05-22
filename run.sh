@@ -68,3 +68,6 @@ https://discord.com/developers/docs/interactions/slash-commands#applicationcomma
 
 # create a command
 toys create-command --token=$BOT_TOKEN
+
+# call on discord
+/meme type: IT
