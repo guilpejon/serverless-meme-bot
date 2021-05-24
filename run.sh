@@ -70,4 +70,11 @@ https://discord.com/developers/docs/interactions/slash-commands#applicationcomma
 toys create-command --token=$BOT_TOKEN
 
 # call on discord
-/meme type: IT
+/random-subreddit-post subreddit: ProgrammerHumor
+
+##########
+# REDDIT #
+##########
+
+# test locally
+toys random-top-post ProgrammerHumor

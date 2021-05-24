@@ -1,5 +1,6 @@
 require 'json'
 require 'ed25519'
+require_relative "reddit_api"
 
 class Responder
   # TODO, move to env var
@@ -45,27 +46,28 @@ class Responder
   private
 
   def handle_command(interaction)
-    type = type_from_interaction(interaction)
+    subreddit = subreddit_from_interaction(interaction)
+    discord_post = RedditApi.new(subreddit: subreddit).formatted_post
     {
       type: 4,
       data: {
-        content: "You tried to get a #{type} meme"
+        content: discord_post
       }
     }
   end
 
-  def type_from_interaction(interaction)
+  def subreddit_from_interaction(interaction)
     command_data = interaction["data"]
 
-    raise "Unexpected command: #{command_data['name']}" unless command_data["name"] == "meme"
+    raise "Unexpected command: #{command_data['name']}" unless command_data["name"] == "subreddit-random-post"
 
     command_data["options"].each do |option|
-      if option["name"] == "type"
+      if option["name"] == "subreddit"
         return option["value"]
       end
     end
 
-    raise "No type found"
+    raise "No subreddit found"
   end
 
   # Verify a request by checking the timestamp and signature

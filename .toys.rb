@@ -6,13 +6,13 @@ tool "create-command" do
 
     client = DiscordApi.new(bot_token: token)
     definition = {
-      name: 'meme',
-      description: 'Meme lookup',
+      name: 'random-subreddit-post',
+      description: 'Fetch random top post from subreddit',
       options: [
         {
           type: 3,
-          name: 'type',
-          description: 'Meme type (e.g. `IT`)',
+          name: 'subreddit',
+          description: 'Subreddit (e.g. `ProgrammerHumor`)',
           required: true
         }
       ]
@@ -33,5 +33,16 @@ tool 'list-commands' do
     result = client.list_commands
 
     puts JSON.pretty_generate(result)
+  end
+end
+
+tool "random-top-post" do
+  required_arg :subreddit
+
+  def run
+    require_relative "reddit_api"
+    client = RedditApi.new(subreddit: subreddit)
+    result = client.formatted_post
+    puts result
   end
 end
