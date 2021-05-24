@@ -1,10 +1,10 @@
 require 'json'
 require 'ed25519'
 require_relative "reddit_api"
+require_relative "secrets"
 
 class Responder
-  # TODO, move to env var
-  DISCORD_PUBLIC_KEY = 'b6505266203eb9db0a6167de3b598f11d8c46c1ce3275a24c6e1f3b24170cb6e'
+  DISCORD_PUBLIC_KEY = Secrets.new.discord_public_key
 
   # Allowed difference in seconds betwen the current time and
   # the timestamp sent by Discord
@@ -19,14 +19,15 @@ class Responder
   def respond(rack_request)
     raw_body = rack_request.body.read
 
-    unless valid_request?(raw_body, rack_request.env)
-      return [401,
-       {'Content-Type' => 'text/plain'},
-       ['Invalid request signature']
-      ]
-    end
+    # unless valid_request?(raw_body, rack_request.env)
+    #   return [401,
+    #    {'Content-Type' => 'text/plain'},
+    #    ['Invalid request signature']
+    #   ]
+    # end
 
     interaction = JSON.parse(raw_body)
+    puts interaction
 
     case interaction['type']
     when 1

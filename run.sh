@@ -78,3 +78,19 @@ toys create-command --token=$BOT_TOKEN
 
 # test locally
 toys random-top-post ProgrammerHumor
+
+# simulate discord request locally
+curl http://localhost:8080 --data '{"type":2,"data":{"name":"subreddit-random-post","options":[{"name":"subreddit","value":"ProgrammerHumor"}]}}'
+
+###########
+# SECRETS #
+###########
+
+# deploy secrets do gcloud
+gcloud secrets create discord-bot-secrets \
+    --project=$MY_PROJECT --data-file=secrets.yaml
+
+# grant access so our code can use the secrets
+gcloud secrets add-iam-policy-binding discord-bot-secrets \
+    --project=$MY_PROJECT --role=roles/secretmanager.secretAccessor \
+    --member=serviceAccount:$MY_PROJECT@appspot.gserviceaccount.com

@@ -1,10 +1,10 @@
 require 'faraday'
 require 'json'
+require_relative "secrets"
 
 class DiscordApi
-  # TODO, move to env var
-  DISCORD_APPLICATION_ID = '845461004586450945'
-  DISCORD_GUILD_ID = '845721790843191347'
+  DISCORD_APPLICATION_ID = Secrets.new.discord_application_id
+  DISCORD_GUILD_ID = Secrets.new.discord_guild_id
 
   def initialize(bot_token: )
     @client_id = DISCORD_APPLICATION_ID

@@ -1,5 +1,5 @@
-require_relative 'responder'
 require 'functions_framework'
+require_relative 'responder'
 
 FunctionsFramework.on_startup do
   set_global(:responder, Responder.new)
