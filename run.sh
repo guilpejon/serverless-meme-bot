@@ -94,3 +94,22 @@ gcloud secrets create discord-bot-secrets \
 gcloud secrets add-iam-policy-binding discord-bot-secrets \
     --project=$MY_PROJECT --role=roles/secretmanager.secretAccessor \
     --member=serviceAccount:$MY_PROJECT@appspot.gserviceaccount.com
+
+###########
+# PUB/SUB #
+###########
+
+# create a topic to publish to
+gcloud pubsub topics create discord-bot-topic --project=$MY_PROJECT
+
+# deploy has to be done for each function in app.rb
+# to deploy the new function and set it to run when a message is published in
+# the topic we just created, use the following command
+gcloud functions deploy discord_subscriber \
+    --project=$MY_PROJECT --region=us-central1 \
+    --trigger-topic=discord-bot-topic --entry-point=discord_subscriber \
+    --runtime=ruby27
+
+# publish a message on the topic we created to test it out
+gcloud pubsub topics publish discord-bot-topic \
+    --project=$MY_PROJECT --message=hello

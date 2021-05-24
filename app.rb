@@ -8,3 +8,7 @@ end
 FunctionsFramework.http 'discord_webhook' do |request|
   global(:responder).respond(request)
 end
+
+FunctionsFramework.cloud_event "discord_subscriber" do |event|
+  logger.info("Received event: #{event.data.inspect}")
+end

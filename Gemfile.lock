@@ -35,6 +35,10 @@ GEM
     google-cloud-env (1.5.0)
       faraday (>= 0.17.3, < 2.0)
     google-cloud-errors (1.1.0)
+    google-cloud-pubsub-v1 (0.4.0)
+      gapic-common (~> 0.3)
+      google-cloud-errors (~> 1.0)
+      grpc-google-iam-v1 (>= 0.6.10, < 2.0)
     google-cloud-secret_manager (1.1.0)
       google-cloud-core (~> 1.5)
       google-cloud-secret_manager-v1 (~> 0.1)
@@ -92,6 +96,7 @@ DEPENDENCIES
   ed25519 (~> 1.2)
   faraday (~> 1.4)
   functions_framework (~> 0.9)
+  google-cloud-pubsub-v1 (~> 0.4)
   google-cloud-secret_manager (~> 1.1)
 
 BUNDLED WITH

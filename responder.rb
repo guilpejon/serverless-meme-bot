@@ -3,8 +3,12 @@ require 'ed25519'
 require_relative "reddit_api"
 require_relative "secrets"
 
+require "google/cloud/pubsub/v1/publisher"
+
 class Responder
   DISCORD_PUBLIC_KEY = Secrets.new.discord_public_key
+  PROJECT_ID = "it-memes-bot"
+  TOPIC_NAME = "discord-bot-topic"
 
   # Allowed difference in seconds betwen the current time and
   # the timestamp sent by Discord
@@ -14,17 +18,20 @@ class Responder
     public_key = DISCORD_PUBLIC_KEY
     public_key_binary = [public_key].pack('H*')
     @verification_key = Ed25519::VerifyKey.new(public_key_binary)
+
+    # Create a Pub/Sub client
+    @pubsub = Google::Cloud::PubSub::V1::Publisher::Client.new
   end
 
   def respond(rack_request)
     raw_body = rack_request.body.read
 
-    # unless valid_request?(raw_body, rack_request.env)
-    #   return [401,
-    #    {'Content-Type' => 'text/plain'},
-    #    ['Invalid request signature']
-    #   ]
-    # end
+    unless valid_request?(raw_body, rack_request.env)
+      return [401,
+       {'Content-Type' => 'text/plain'},
+       ['Invalid request signature']
+      ]
+    end
 
     interaction = JSON.parse(raw_body)
     puts interaction
@@ -48,6 +55,12 @@ class Responder
 
   def handle_command(interaction)
     subreddit = subreddit_from_interaction(interaction)
+
+    # Publish a simple pubsub event
+    topic = "projects/#{PROJECT_ID}/topics/#{TOPIC_NAME}"
+    attributes = { message: "Chosen subreddit #{subreddit}" }
+    @pubsub.publish(topic: topic, messages: [{ attributes: attributes }])
+
     discord_post = RedditApi.new(subreddit: subreddit).formatted_post
     {
       type: 4,
