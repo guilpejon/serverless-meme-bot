@@ -56,18 +56,13 @@ class Responder
   def handle_command(interaction)
     subreddit = subreddit_from_interaction(interaction)
 
-    # Publish a simple pubsub event
+    # Publish a simple pubsub event including the subreddit and interaction token
     topic = "projects/#{PROJECT_ID}/topics/#{TOPIC_NAME}"
-    attributes = { message: "Chosen subreddit #{subreddit}" }
+    attributes = { subreddit: subreddit, token: interaction["token"]}
     @pubsub.publish(topic: topic, messages: [{ attributes: attributes }])
 
-    discord_post = RedditApi.new(subreddit: subreddit).formatted_post
-    {
-      type: 4,
-      data: {
-        content: discord_post
-      }
-    }
+    # deferred response so discord knows it might take more than 3 seconds for the response
+    { type: 5 }
   end
 
   def subreddit_from_interaction(interaction)

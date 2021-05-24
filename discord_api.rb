@@ -28,6 +28,20 @@ class DiscordApi
     )
   end
 
+  def edit_interaction_response(interaction_token, content)
+    data_json = JSON.dump({content: content})
+    headers = {"Content-Type" => "application/json"}
+    call_api("/webhooks/#{@client_id}/#{interaction_token}/messages/@original",
+             method: :patch, body: data_json, headers: headers)
+  end
+
+  def create_followup(interaction_token, content)
+    data_json = JSON.dump({content: content})
+    headers = {"Content-Type" => "application/json"}
+    call_api("/webhooks/#{@client_id}/#{interaction_token}",
+             method: :post, body: data_json, headers: headers)
+  end
+
   private
 
   def call_api(

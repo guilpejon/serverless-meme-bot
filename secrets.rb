@@ -14,7 +14,10 @@ class Secrets
     end
   end
 
-  attr_reader :discord_application_id, :discord_guild_id, :discord_public_key
+  attr_reader :discord_application_id,
+              :discord_guild_id,
+              :discord_public_key,
+              :discord_bot_token
 
   def load_from_file
     secret_data = Psych.load_file(SECRETS_FILE)
@@ -35,5 +38,6 @@ class Secrets
     @discord_application_id = hash["discord_application_id"]
     @discord_guild_id = hash["discord_guild_id"]
     @discord_public_key = hash["discord_public_key"]
+    @discord_bot_token = hash["discord_bot_token"]
   end
 end

@@ -80,6 +80,7 @@ toys create-command --token=$BOT_TOKEN
 toys random-top-post ProgrammerHumor
 
 # simulate discord request locally
+bundle exec functions-framework-ruby --target discord_webhook
 curl http://localhost:8080 --data '{"type":2,"data":{"name":"subreddit-random-post","options":[{"name":"subreddit","value":"ProgrammerHumor"}]}}'
 
 ###########
@@ -94,6 +95,10 @@ gcloud secrets create discord-bot-secrets \
 gcloud secrets add-iam-policy-binding discord-bot-secrets \
     --project=$MY_PROJECT --role=roles/secretmanager.secretAccessor \
     --member=serviceAccount:$MY_PROJECT@appspot.gserviceaccount.com
+
+# update secrets command
+gcloud secrets versions add discord-bot-secrets \
+    --project=$MY_PROJECT --data-file=secrets.yaml
 
 ###########
 # PUB/SUB #
